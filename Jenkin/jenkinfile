@@ -17,12 +17,12 @@ pipeline {
     stage ('terraform init'){
       steps {
        dir("${TF_DIR}") {
-          sh '''
+          sh """
               terraform init \
               -backend-config="bucket=terraform-state-bucket-varshapat" \
               -backend-config="key=env/${params.deployment_env}/terraform.state" \
               -backend-config="region=ap-south-1"
-            '''
+            """
 
        }
       }
@@ -31,10 +31,10 @@ pipeline {
     stage ("select the workspace" ){
       steps  {
        dir ("${TF_DIR}"){
-       sh '''
+       sh """
        terraform workspace list || terraform workspace new ${params.deployment_env}
        terraform workspace select ${params.deployment_env}
-       '''
+       """
        }
       }
      }
