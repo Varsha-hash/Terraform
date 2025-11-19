@@ -32,8 +32,8 @@ pipeline {
       steps  {
        dir ("${TF_DIR}"){
        sh """
-       terraform workspace list || terraform workspace new ${params.deployment_env}
-       terraform workspace select ${params.deployment_env}
+       terraform workspace list 
+       terraform workspace select ${params.deployment_env} || terraform workspace new ${params.deployment_env}
        """
        }
       }
