@@ -13,7 +13,7 @@ pipeline {
           git branch: 'main',  url: 'https://github.com/Varsha-hash/Terraform.git'
          }
         }
-       }
+       
     stage ('terraform init'){
       steps {
        dir("${TF_DIR}") {
@@ -24,7 +24,7 @@ pipeline {
 
     stage ("select the workspace" ){
       steps  {
-       dir ($"{TF_DIR}"){
+       dir ("${TF_DIR}"){
        sh '''
        terraform workspace list || terraform workspace new ${params.deployment_env}
        terraform workspace select ${params.deployment_env}
@@ -63,12 +63,10 @@ pipeline {
         sh 'terraform apply -auto-approve tfplan'
         }
        }
-}
- 
+  }
+} 
   
-
-  
- post {
+post {
         success {
             echo "Deployment to ${params.deployment_env} successful!"
         }
