@@ -1,0 +1,68 @@
+pipeline {
+  agent any 
+  parameters {
+    choice( name: 'deployment_env' , choices: ['dev', 'qa', 'prod'], description: 'Select the deployment environment')
+  }
+
+  stages {
+    stage ('Clone the Repo') {
+        steps {
+          git branch: 'main',  url: ''
+        }
+    }
+    stage ('terraform init'){
+      steps {
+       sh 'terraform init'
+      }
+    }
+
+    stage ("select the workspace" ){
+      steps {
+       sh '''
+       terraform workspace list || terraform workspace new ${params.deployment_env}
+       terraform workspace select ${params.deployment_env}
+       '''
+      }
+    }
+
+    stage ('terraform validate'){
+      steps {
+       sh 'terraform validate'
+      }
+    }
+
+    stage ("terraform plan " ){
+      steps {
+       sh 'terraform plan -var-file=config_env/${params.deployment_env}.tfvars -out=tfplan'
+      }
+    }
+
+    
+    stage('Approval') {
+      steps {
+        input message: "Approve deployment to ${params.deploymnet_env}?"
+            }
+        }
+
+
+    stage ("terraform apply " ){
+      steps {
+       sh 'terraform apply -auto-approve tfplan'
+      }
+
+
+      }
+ 
+  }
+
+  
+ post {
+        success {
+            echo "Deployment to ${params.deployment_env} successful!"
+        }
+        failure {
+            echo "Deployment failed!"
+        }
+
+}
+}

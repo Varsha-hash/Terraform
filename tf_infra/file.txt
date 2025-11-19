@@ -1,0 +1,71 @@
+vpc.tf 
+
+ resource "aws_vpc" "tf_vpc" {
+     name =  ""
+     cidr_block = "10.0.0.0/16"
+
+    tags {
+
+      Name = "non-prod"
+    }
+ }
+
+
+pipeline {
+  agent any 
+  parameters {
+    choice( name: 'deploymnet_env' , choices: ['dev', 'qa', 'prod'], description: 'Select the deployment environment')
+  }
+
+  stages {
+    stage ('Clone the Repo') {
+        steps {
+          git branch: 'main',  url: ''
+        }
+    }
+    stage ('terraform init'){
+      steps {
+       sh 'terraform init'
+      }
+
+    stage ("select the workspace" ){
+      steps {
+       sh '''
+       terraform list workspace  || terraform workspace new ${param.deploymnet_env}
+       terraform select ${param.deploymnet_env}
+       '''
+      }
+
+    stage ('terraform validate'){
+      steps {
+       sh 'terraform validate'
+      }
+
+    stage ("terraform plan " ){
+      steps {
+       sh 'terraform plan -var-file=config_env/${param.deploymnet_env}.tfvars'
+      }
+
+    stage ("terraform apply " ){
+      steps {
+       sh 'terraform apply -auto-approve -var-file=config_env/${param.deploymnet_env}.tfvars'
+      }
+
+
+      }
+    }
+}
+}
+}
+  }
+
+  
+ post {
+        success {
+            echo "Deployment to ${params.deploymnet_env} successful!"
+        }
+        failure {
+            echo "Deployment failed!"
+        }
+
+}
