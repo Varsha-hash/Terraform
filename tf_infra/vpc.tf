@@ -1,6 +1,5 @@
 resource "aws_vpc" "tf_vpc" {
-    cidr_block = "10.0.0.0/16"
-
+    cidr_block = var.vpc_cidr_range
     tags = {
        Name = var.vpc_name
     }
