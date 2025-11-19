@@ -1,1 +1,1 @@
-vpc_name = dev-vpc
+vpc_name = "dev-vpc"
