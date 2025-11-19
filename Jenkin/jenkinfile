@@ -18,7 +18,7 @@ pipeline {
       steps {
        dir("${TF_DIR}") {
           sh """
-              terraform init \
+              terraform init -reconfigure \
               -backend-config="bucket=terraform-state-bucket-varshapat" \
               -backend-config="key=env/${params.deployment_env}/terraform.state" \
               -backend-config="region=ap-south-1"
