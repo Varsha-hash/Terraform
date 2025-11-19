@@ -1,6 +1,6 @@
 ### Deploy Jenkins server and terraform 
 ### user data script t2.medium 
-'''
+```
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -52,4 +52,4 @@ terraform -version
 
 echo "[INFO] Jenkins and Terraform installed successfully!"
 echo "Access Jenkins at: http://<EC2-Public-IP>:8080"
-'''
+```
