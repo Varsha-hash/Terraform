@@ -50,7 +50,9 @@ pipeline {
     stage ("terraform plan " ){
       steps  {
        dir("${TF_DIR}"){
-        sh 'terraform plan -var-file=config_env/${params.deployment_env}.tfvars -out=tfplan'
+        sh """
+        terraform plan -var-file=config_env/${params.deployment_env}.tfvars -out=tfplan
+        """
        }
       }
     }    
