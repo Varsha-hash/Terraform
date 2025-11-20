@@ -1,0 +1,61 @@
+resouce "aws_subnet" "public_subnet" {
+    count = legnth(var.subnet_cidr_block)
+    vpc_id = aws_vpc.vpc_tf.vpc_id
+    cidr_block = var.subnet_cidr_block.
+    avaibility_zone = var.avaibility_zone
+
+    tag = {
+       Name =  var.public_subnet1-${count.index}
+    }
+}
+
+resource "aws_subnet" "public_subnet" {
+    count = length(var.public_subnet_cidr_block)
+    vpc_id = aws_vpc.vpc_tf.id
+    cidr_block = var.public_subnet_cidr_block[count.index] # Access element from a list
+    availability_zone  = element(var.availability_zone[count.index]) # Retrieve a single value from a list 
+    tags = {
+       Name =  "${var.public_subnet_name}-${count.index+1}" # Interpolate values into a string
+    }
+}
+
+ resource "aws_route_table_association" "public_subnet_association" {
+    count = length(aws_subnet.public_subnet)
+    subnet_id      = aws_subnet.public_subnet.[count.index].id
+    route_table_id = aws_route_table.bar.id
+}
+
+ resource  "aws_db_instance" "rds_db" {
+     allocated_storeage= 
+     db_name=dev-rds-postgres-db
+     engine="PostgreSQL"
+     engine_version="17.4"
+     username= 
+     password=
+     instance_class= 
+     vpc_security_group_id= 
+     db_subnet_group_name= 
+
+
+ }
+
+resource "aws_security_group" "rds_sg" {
+
+    name = 
+    description = 
+    vpc_id = 
+    igress  {
+        from_port= 3306
+        to_port= 3306
+        protocol= "tcp"
+        cidr_blocks = ["10.0.0.0/16]
+}
+
+    egress  {
+        from_port= 0
+        to_port= 0
+        protocol= "-1"
+        cidr_block = ["0.0.0.0/0]
+    }
+
+}

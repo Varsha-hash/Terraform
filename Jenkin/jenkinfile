@@ -11,9 +11,15 @@ pipeline {
     stage ('Clone the Repo') {
         steps {
           git branch: 'main',  url: 'https://github.com/Varsha-hash/Terraform.git'
-         }
+         } 
         }
        
+    stage('Show Selected Environment') {
+        steps {
+        echo "Deployment environment selected: ${params.deployment_env}"
+    }
+}
+
     stage ('terraform init'){
       steps {
        dir("${TF_DIR}") {
